@@ -1,79 +1,111 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="About Me Page">
-    <title>About Me</title>
+    <title>Battle Royale Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ad0c0c;
-        }
-        header {
-            background-color: #030a57;
-            color: white;0
-            padding: 20px;
             text-align: center;
+            background-color: #f4f4f4;
+            margin-top: 50px;
         }
-        section {
+        .container {
+            display: inline-block;
             padding: 20px;
-            max-width: 800px;
-            margin: auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        p {
-            line-height: 1.6;
-            color: #666;
-        }
-        .profile-pic {
-            display: block;
-            margin: 20px auto;
-            border-radius: 50%;
-            max-width: 150px;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #030a57;
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
             color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .social-icons a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #4CAF50;
+        button:hover {
+            background-color: #218838;
+        }
+        #players, #log, #winner {
+            margin: 10px 0;
+        }
+        #log {
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h2>Welcome to My About Me Page</h2>
-</header>
-
-<div id="body">
-    <h1>About Me</h1>
-    <!-- <img src="profile-pic.jpg" alt="Profile Picture" class="profile-pic"> -->
-    <p>Hello! I'm HunteGX, and this is my personal website. I Love playing Fortnite, Brawl Stars and Gorilla Tag. Currently, I’m working as My Twitch Channel, and in my free time, I love Playing BasketBall and Football.</p>
-    <p>I'm always eager to learn new things and take on challenges. Feel free to explore my site, connect with me on social media, or contact me for collaborations!</p>
-
-    <div class="social-icons">
-        <h3>Connect with me:</h3>
-        <a href="https://www.twitch.tv/king_huntegx" target="_blank">Twitch</a>
+    <div class="container">
+        <h1>Battle Royale Game</h1>
+        <div id="players">Remaining players: <span id="player-list"></span></div>
+        <div id="log">Elimination Log:</div>
+        <button onclick="startGame()">Start Game</button>
+        <div id="winner"></div>
     </div>
-</div>
 
-<footer>
-    <p>&copy; 2024 HunteGX. All Rights Reserved.</p>
-</footer>
+    <script>
+        let players = [];
+        let eliminatedPlayers = [];
+        let gameInProgress = false;
+
+        function initializeGame() {
+            const playerCount = 10; // Number of players
+            players = Array.from({ length: playerCount }, (_, i) => `Player ${i + 1}`);
+            eliminatedPlayers = [];
+            gameInProgress = false;
+            document.getElementById('log').innerHTML = 'Elimination Log:';
+            document.getElementById('winner').innerHTML = '';
+            updatePlayerList();
+        }
+
+        function startGame() {
+            if (gameInProgress) return; // Prevent multiple game instances
+            gameInProgress = true;
+            document.getElementById('winner').innerHTML = '';
+            eliminatePlayer();
+        }
+
+        function eliminatePlayer() {
+            if (players.length > 1) {
+                // Randomly select a player to eliminate
+                const randomIndex = Math.floor(Math.random() * players.length);
+                const eliminated = players.splice(randomIndex, 1)[0];
+                eliminatedPlayers.push(eliminated);
+
+                // Update log and player list
+                document.getElementById('log').innerHTML += `<br>${eliminated} has been eliminated!`;
+                updatePlayerList();
+
+                // Eliminate next player after a delay
+                setTimeout(eliminatePlayer, 1000);
+            } else {
+                declareWinner();
+            }
+        }
+
+        function updatePlayerList() {
+            document.getElementById('player-list').innerHTML = players.join(', ');
+        }
+
+        function declareWinner() {
+            const winner = players[0];
+            document.getElementById('winner').innerHTML = `🎉 ${winner} is the winner! 🎉`;
+            gameInProgress = false;
+        }
+
+        // Initialize the game on page load
+        window.onload = initializeGame;
+    </script>
 
 </body>
 </html>
